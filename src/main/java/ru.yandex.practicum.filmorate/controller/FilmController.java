@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
-    private final LocalDate DATE_MIN = LocalDate.of(1895, 12, 28);
+    private final LocalDate DATEMIN = LocalDate.of(1895, 12, 28);
     private int generateId = 0;
 
     @GetMapping
@@ -59,7 +59,7 @@ public class FilmController {
             throw new ValidationException("Ошибка. Максимальная длина описания — 200 символов. Сейчас " +
                     film.getDescription().length());
         }
-        if (film.getReleaseDate().isBefore(DATE_MIN)) {
+        if (film.getReleaseDate().isBefore(DATEMIN)) {
             log.error("Неправильная дата релиза");
             throw new ValidationException("Ошибка. Неправильная дата релиза");
         }
