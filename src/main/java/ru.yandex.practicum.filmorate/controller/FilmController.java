@@ -37,34 +37,19 @@ public class FilmController {
     @PutMapping
     Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
         validateFilm(film);
-        if (film.getId() > 0) {
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-                log.info("Обновление фильма " + film.getName());
-                return film;
-            }
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            log.info("Обновление фильма " + film.getName());
+            return film;
         }
         log.error("Неправильный id фильма");
         throw new ValidationException("Ошибка. Неправильный id фильма");
     }
 
     private void validateFilm(Film film) throws ValidationException {
-        if (film.getName() == null || film.getName().isEmpty()) {
-            log.error("Неправильное название фильма");
-            throw new ValidationException("Ошибка. Название не может быть пустым");
-        }
-        if (film.getDescription().length() > 200) {
-            log.error("Слишком длинное описание фильма");
-            throw new ValidationException("Ошибка. Максимальная длина описания — 200 символов. Сейчас " +
-                    film.getDescription().length());
-        }
         if (film.getReleaseDate().isBefore(dateMin)) {
             log.error("Неправильная дата релиза");
             throw new ValidationException("Ошибка. Неправильная дата релиза");
-        }
-        if (film.getDuration() < 0) {
-            log.error("Неправильная продолжительность");
-            throw new ValidationException("Ошибка. Продолжительность фильма должна быть положительной");
         }
     }
 
