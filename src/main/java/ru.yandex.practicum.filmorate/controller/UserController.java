@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) throws ValidationException {
         validateUser(user);
         user.setId(generateId());
         users.put(user.getId(), user);
@@ -44,9 +44,13 @@ public class UserController {
         throw new ValidationException("Ошибка. Неправильный id пользователя");
     }
 
-    private void validateUser(User user) {
+    private void validateUser(User user) throws ValidationException {
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
+        }
+        if (user.getLogin().contains(" ")) {
+            log.error("Неправильный логин");
+            throw new ValidationException("Неправильный логин");
         }
     }
 
