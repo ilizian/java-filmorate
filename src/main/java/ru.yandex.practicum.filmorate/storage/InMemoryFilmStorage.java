@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
-    private final static LocalDate DATE_MIN = LocalDate.of(1895, 12, 28);
+    private static final LocalDate DATE_MIN = LocalDate.of(1895, 12, 28);
     private long generateId = 0;
 
     @Override
@@ -34,6 +34,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         throw new NotFoundException("Ошибка. Неправильный id фильма");
     }
+
     @Override
     public void validateFilm(Film film) throws ValidationException {
         if (film.getReleaseDate().isBefore(DATE_MIN)) {
