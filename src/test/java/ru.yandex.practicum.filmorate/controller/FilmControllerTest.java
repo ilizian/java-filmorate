@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -18,11 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmControllerTest {
 
     private static Validator validator;
+    private static InMemoryFilmStorage filmStorage;
 
     @BeforeEach
     void initial() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+        filmStorage = new InMemoryFilmStorage();
     }
 
     @Test
@@ -92,10 +96,7 @@ public class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(1600, 1, 1));
         final ValidationException e = assertThrows(
                 ValidationException.class,
-                () -> {
-                    FilmController filmController = new FilmController();
-                    filmController.addFilm(film);
-                });
+                () -> filmStorage.addFilm(film));
         assertEquals("Ошибка. Неправильная дата релиза", e.getMessage());
     }
 }
