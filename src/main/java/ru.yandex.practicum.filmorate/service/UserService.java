@@ -57,9 +57,9 @@ public class UserService {
         return friends;
     }
 
-    public List<User> getCommonFriends(long id1, long id2) throws NotFoundException {
-        User user1 = userStorage.getUserById(id1);
-        User user2 = userStorage.getUserById(id2);
+    public List<User> getCommonFriends(long id, long otherId) throws NotFoundException {
+        User user1 = userStorage.getUserById(id);
+        User user2 = userStorage.getUserById(otherId);
         List<User> userList = new ArrayList<>();
         for (Long idFriend : user1.getFriends()) {
             if (user2.getFriends().contains(idFriend)) {

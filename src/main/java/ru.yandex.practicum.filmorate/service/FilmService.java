@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserService userService;
+    private final UserStorage userStorage;
 
     public Film addFilm(Film film) throws ValidationException {
         return filmStorage.addFilm(film);
@@ -35,14 +36,14 @@ public class FilmService {
 
     public Film addUserLike(long id, long userId) throws NotFoundException {
         Film film = filmStorage.getFilmById(id);
-        userService.getUserById(userId);
+        userStorage.getUserById(userId);
         film.getLikes().add(userId);
         return film;
     }
 
     public Film removeUserLike(long id, long userId) throws NotFoundException {
         Film film = filmStorage.getFilmById(id);
-        userService.getUserById(userId);
+        userStorage.getUserById(userId);
         if (!film.getLikes().contains(userId)) {
             throw new NotFoundException("Ошибка. Неправильный id фильма");
         }

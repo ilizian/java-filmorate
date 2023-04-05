@@ -4,8 +4,8 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -18,5 +18,5 @@ public class User {
     private String name;
     @Past(message = "Неправильная дата рождения")
     private LocalDate birthday;
-    private final List<Long> friends = new ArrayList<>();
+    private final Set<Long> friends = new HashSet<>();
 }
