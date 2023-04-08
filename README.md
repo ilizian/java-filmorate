@@ -1,6 +1,7 @@
 # Filmorate project.
 
-![](src/main/resources/ER диаграмма.png "ER диаграмма")
+
+![2023-04-08_22-39-57](https://user-images.githubusercontent.com/114443883/230739512-92654c6f-6e28-49ce-af33-b4bc1eafde2c.png)
 
 https://dbdiagram.io/d/643190098615191cfa8c5c63
 
