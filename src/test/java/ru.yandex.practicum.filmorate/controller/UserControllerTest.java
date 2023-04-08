@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -17,11 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserControllerTest {
 
     private static Validator validator;
+    private static InMemoryUserStorage userStorage;
 
     @BeforeEach
     void initial() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+        userStorage = new InMemoryUserStorage();
     }
 
     @Test
@@ -64,10 +67,7 @@ public class UserControllerTest {
         user.setEmail("test@test.ru");
         final ValidationException e = assertThrows(
                 ValidationException.class,
-                () -> {
-                    UserController userController = new UserController();
-                    userController.addUser(user);
-                });
+                () -> userStorage.addUser(user));
         assertEquals("Неправильный логин", e.getMessage());
     }
 
@@ -86,11 +86,10 @@ public class UserControllerTest {
     @Test
     void addUserNameItsLogin() throws ValidationException {
         User user = new User();
-        UserController userController = new UserController();
         user.setLogin("test");
         user.setEmail("test@test.ru");
         user.setBirthday(LocalDate.of(1925, 12, 12));
-        userController.addUser(user);
+        userStorage.addUser(user);
         assertEquals(user.getLogin(), user.getName());
     }
 }

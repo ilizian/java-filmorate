@@ -1,60 +1,74 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
+@RequiredArgsConstructor
+@Validated
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int generateId = 0;
+    private final UserService userService;
 
     @GetMapping
     public Collection<User> getAllUsers() {
         log.debug("Запрос списка всех пользователей");
-        return users.values();
+        return userService.getAllUsers();
     }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        validateUser(user);
-        user.setId(generateId());
-        users.put(user.getId(), user);
+        userService.addUser(user);
         log.info("Добавлен новый пользователь " + user.getLogin());
         return user;
     }
 
     @PutMapping
-    User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        validateUser(user);
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("Обновлен пользователь " + user.getName());
-            return user;
-        }
-        log.error("Неправильный id пользователя");
-        throw new ValidationException("Ошибка. Неправильный id пользователя");
+    public User updateUser(@Valid @RequestBody User user) throws ValidationException, NotFoundException {
+        userService.updateUser(user);
+        log.info("Обновлен пользователь " + user.getName());
+        return user;
     }
 
-    private void validateUser(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getLogin().contains(" ")) {
-            log.error("Неправильный логин");
-            throw new ValidationException("Неправильный логин");
-        }
+    @GetMapping("/{id}/friends")
+    public List<User> getUserFriends(@PathVariable long id) throws NotFoundException {
+        log.info("Запрос списка друзей пользователя по id " + id);
+        return userService.getUserFriends(id);
     }
 
-    private int generateId() {
-        return ++generateId;
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addUserFriend(@PathVariable long id, @PathVariable long friendId) throws NotFoundException {
+        log.info("Добавление друга пользователю по id " + id + " friendId " + friendId);
+        return userService.addUserFriend(id, friendId);
     }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User removeUserFriend(@PathVariable long id, @PathVariable long friendId) throws NotFoundException {
+        log.info("Удаление друга пользователю по id " + id + " friendId " + friendId);
+        return userService.removeUserFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable long id) throws NotFoundException {
+        log.info("Запрос пользователя по id " + id);
+        return userService.getUserById(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) throws NotFoundException {
+        log.info("Запрос списка общих друзей пользователей по id " + id + ", " + otherId);
+        return userService.getCommonFriends(id, otherId);
+    }
+
 }
