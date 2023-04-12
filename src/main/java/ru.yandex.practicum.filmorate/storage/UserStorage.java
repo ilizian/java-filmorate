@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserStorage {
     User addUser(User user) throws ValidationException;
@@ -16,4 +17,5 @@ public interface UserStorage {
     void validateUser(User user) throws ValidationException;
 
     User getUserById(long id) throws NotFoundException;
+
 }
