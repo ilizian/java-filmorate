@@ -1,18 +1,17 @@
 # Filmorate project.
 
 
-![2023-04-08_22-39-57](https://user-images.githubusercontent.com/114443883/230739512-92654c6f-6e28-49ce-af33-b4bc1eafde2c.png)
+![ER diag](https://user-images.githubusercontent.com/114443883/231378577-ac881249-47a9-4076-b10a-3a61578423b5.png)
 
 https://dbdiagram.io/d/643190098615191cfa8c5c63
 
 
-
 Таблицы:
 1. films (фильмы)
-2. genre (жанр)
+2. genres (жанры)
 3. film_genre (фильм-жанр)
 4. mpa (возрастной рейтинг)
-5. likes (одобрительные отметки)
+5. likes (пользовательские лайки)
 6. users (пользователи)
 7. friends (друзья)
 
