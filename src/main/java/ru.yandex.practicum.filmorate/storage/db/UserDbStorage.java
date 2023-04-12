@@ -29,6 +29,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) throws ValidationException {
+        validateUser(user);
         String sql = "INSERT INTO users (email, login, name, birthday) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
@@ -40,14 +41,13 @@ public class UserDbStorage implements UserStorage {
             return preparedStatement;
         }, keyHolder);
         user.setId(keyHolder.getKey().longValue());
-        validateUser(user);
         return user;
     }
 
     @Override
     public User updateUser(User user) throws NotFoundException, ValidationException {
-        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
         validateUser(user);
+        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
         int result = jdbcTemplate.update(sql, user.getEmail(), user.getLogin(),
                 user.getName(), user.getBirthday(), user.getId());
         if (result == 0) {
@@ -64,7 +64,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void validateUser(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (user.getLogin().contains(" ")) {

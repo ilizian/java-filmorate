@@ -19,6 +19,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Component
@@ -28,9 +29,10 @@ import java.util.Collection;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
+    private static final LocalDate DATE_MIN = LocalDate.of(1895, 12, 28);
     @Override
     public Film addFilm(Film film) throws ValidationException {
+        validateFilm(film);
         String sql = "INSERT INTO films (name, description, release_date, duration, mpa_id)" +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -49,6 +51,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) throws ValidationException, NotFoundException {
+        validateFilm(film);
         String sql = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?,  mpa_id = ? " +
                 "WHERE film_id = ?";
         int result = jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
@@ -61,7 +64,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void validateFilm(Film film) throws ValidationException {
-
+        if (film.getReleaseDate().isBefore(DATE_MIN)) {
+            throw new ValidationException("Ошибка. Неправильная дата релиза");
+        }
     }
 
     @Override

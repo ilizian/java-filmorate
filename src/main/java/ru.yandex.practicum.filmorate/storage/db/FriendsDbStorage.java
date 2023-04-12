@@ -37,15 +37,15 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public List<User> getUserFriends(long id) {
-        String sql = "SELECT * FROM friends WHERE user_id = ?";
+        String sql = "SELECT * FROM users as u, friends as f WHERE u.user_id = f.friend_id AND f.user_id = ?";
         List<User> result = jdbcTemplate.query(sql, this::makeUser, id);
         return result;
     }
 
     @Override
     public List<User> getCommonFriends(long id, long otherId) {
-        String sql = "SELECT friend_id FROM (SELECT * FROM friends WHERE user_id = ? OR user_id = ?) " +
-                "GROUP BY friend_id HAVING (COUNT(*) > 1)";
+        String sql = "SELECT * FROM users u, friends f, friends ff " +
+                "WHERE u.user_id = f.friend_id AND u.user_id = ff.friend_id AND f.user_id = ? AND ff.user_id = ?";;
         List<User> result = jdbcTemplate.query(sql, this::makeUser, id, otherId);
         return result;
     }
