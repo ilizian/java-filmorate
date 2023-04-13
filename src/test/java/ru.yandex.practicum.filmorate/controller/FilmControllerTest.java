@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 
@@ -31,7 +32,8 @@ public class FilmControllerTest {
 
     @Test
     void addFilmWrongName() {
-        Film film = new Film();
+        Film film = new Film(1, "", "Desc", LocalDate.of(1999, 1, 1),
+                100, new Mpa(1, "name"), 5);
         film.setDuration(100);
         film.setDescription("Описание");
         film.setId(1);
@@ -44,13 +46,11 @@ public class FilmControllerTest {
 
     @Test
     void addFilmWrongDescription() {
-        Film film = new Film();
-        film.setName("Тестовый фильм");
-        film.setDuration(100);
+        Film film = new Film(2, "Name", "Desc", LocalDate.of(1999, 1, 1),
+                100, new Mpa(1, "name"), 5);
         film.setDescription("ОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписание" +
                 "ОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписание" +
                 "ОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписаниеОписание");
-        film.setId(1);
         film.setReleaseDate(LocalDate.of(1999, 1, 1));
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
         assertEquals(1, validates.size());
@@ -60,12 +60,9 @@ public class FilmControllerTest {
 
     @Test
     void addFilmWrongDuration() {
-        Film film = new Film();
-        film.setName("Тестовый фильм");
+        Film film = new Film(3, "Name", "Desc", LocalDate.of(1999, 1, 1),
+                100, new Mpa(1, "name"), 5);
         film.setDuration(-1);
-        film.setDescription("Описание");
-        film.setId(1);
-        film.setReleaseDate(LocalDate.of(1999, 1, 1));
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
         assertEquals(1, validates.size());
         ConstraintViolation<Film> validate = validates.iterator().next();
@@ -74,12 +71,8 @@ public class FilmControllerTest {
 
     @Test
     void addFilmWrongDateFuture() {
-        Film film = new Film();
-        film.setName("Тестовый фильм");
-        film.setDuration(100);
-        film.setDescription("Описание");
-        film.setId(1);
-        film.setReleaseDate(LocalDate.of(2100, 1, 1));
+        Film film = new Film(3, "Name", "Desc", LocalDate.of(2100, 1, 1),
+                100, new Mpa(1, "name"), 5);
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
         assertEquals(1, validates.size());
         ConstraintViolation<Film> validate = validates.iterator().next();
@@ -88,12 +81,8 @@ public class FilmControllerTest {
 
     @Test
     void addFilmWrongDatePastMin() {
-        Film film = new Film();
-        film.setName("Тестовый фильм");
-        film.setDuration(100);
-        film.setDescription("Описание");
-        film.setId(1);
-        film.setReleaseDate(LocalDate.of(1600, 1, 1));
+        Film film = new Film(3, "Name", "Desc", LocalDate.of(1600, 1, 1),
+                100, new Mpa(1, "name"), 5);
         final ValidationException e = assertThrows(
                 ValidationException.class,
                 () -> filmStorage.addFilm(film));
