@@ -23,7 +23,7 @@ public class FriendsDbStorage implements FriendsStorage {
     @Override
     public void addUserFriend(long id, long friendId) throws NotFoundException {
         String sql = "INSERT INTO friends (user_id, friend_id) VALUES (?, ?)";
-        int result =  jdbcTemplate.update(sql, id, friendId);
+        int result = jdbcTemplate.update(sql, id, friendId);
         if (result == 0) {
             throw new NotFoundException("Ошибка. Неправильный id пользователя");
         }
@@ -38,16 +38,14 @@ public class FriendsDbStorage implements FriendsStorage {
     @Override
     public List<User> getUserFriends(long id) {
         String sql = "SELECT * FROM users as u, friends as f WHERE u.user_id = f.friend_id AND f.user_id = ?";
-        List<User> result = jdbcTemplate.query(sql, this::makeUser, id);
-        return result;
+        return jdbcTemplate.query(sql, this::makeUser, id);
     }
 
     @Override
     public List<User> getCommonFriends(long id, long otherId) {
         String sql = "SELECT * FROM users u, friends f, friends ff " +
-                "WHERE u.user_id = f.friend_id AND u.user_id = ff.friend_id AND f.user_id = ? AND ff.user_id = ?";;
-        List<User> result = jdbcTemplate.query(sql, this::makeUser, id, otherId);
-        return result;
+                "WHERE u.user_id = f.friend_id AND u.user_id = ff.friend_id AND f.user_id = ? AND ff.user_id = ?";
+        return jdbcTemplate.query(sql, this::makeUser, id, otherId);
     }
 
     private User makeUser(ResultSet resultSet, int rowNum) throws SQLException {

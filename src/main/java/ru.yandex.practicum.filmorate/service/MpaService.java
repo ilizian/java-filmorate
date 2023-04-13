@@ -14,13 +14,10 @@ public class MpaService {
     private final MpaStorage mpaStorage;
 
     public Mpa getMpaById(int id) throws NotFoundException {
-        Mpa mpa = mpaStorage.getMpaById(id);
-        return mpa;
+        return mpaStorage.getMpaById(id);
     }
 
     public List<Mpa> getAllMpa() {
-        List<Mpa> mpas = mpaStorage.getAllMpa();
-        return mpas;
+        return mpaStorage.getAllMpa();
     }
-
 }

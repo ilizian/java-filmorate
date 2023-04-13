@@ -18,7 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -40,7 +40,7 @@ public class UserDbStorage implements UserStorage {
             preparedStatement.setDate(4, Date.valueOf(user.getBirthday()));
             return preparedStatement;
         }, keyHolder);
-        user.setId(keyHolder.getKey().longValue());
+        user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return user;
     }
 
@@ -93,5 +93,4 @@ public class UserDbStorage implements UserStorage {
                 resultSet.getDate("birthday").toLocalDate()
         );
     }
-
 }

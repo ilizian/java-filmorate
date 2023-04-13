@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.GenreService;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/genres")
@@ -21,6 +20,7 @@ import java.util.List;
 @Validated
 public class GenreController {
     private final GenreService genreService;
+
     @GetMapping
     public Collection<Genre> getAllGenres() {
         log.info("Запрос списка всех жанров");
@@ -28,7 +28,7 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public Genre getGenreById (@PathVariable Integer id) throws NotFoundException {
+    public Genre getGenreById(@PathVariable Integer id) throws NotFoundException {
         log.info("Запрос жанра по id " + id);
         return genreService.getGenreById(id);
     }

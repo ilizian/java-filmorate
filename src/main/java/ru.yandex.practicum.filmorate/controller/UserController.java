@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getUserFriends(@PathVariable long id) throws NotFoundException {
+    public List<User> getUserFriends(@PathVariable long id) {
         log.info("Запрос списка друзей пользователя по id " + id);
         return userService.getUserFriends(id);
     }
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User removeUserFriend(@PathVariable long id, @PathVariable long friendId) throws NotFoundException {
+    public User removeUserFriend(@PathVariable long id, @PathVariable long friendId) {
         log.info("Удаление друга пользователю по id " + id + " friendId " + friendId);
         return userService.removeUserFriend(id, friendId);
     }
@@ -66,9 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) throws NotFoundException {
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
         log.info("Запрос списка общих друзей пользователей по id " + id + ", " + otherId);
         return userService.getCommonFriends(id, otherId);
     }
-
 }

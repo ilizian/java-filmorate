@@ -9,11 +9,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.db.dal.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.db.dal.LikesStorage;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +23,7 @@ public class FilmService {
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
     private final LikesStorage likesStorage;
+    private final GenreStorage genreStorage;
 
     public Film addFilm(Film film) throws ValidationException {
         return filmStorage.addFilm(film);
@@ -33,11 +34,15 @@ public class FilmService {
     }
 
     public Collection<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        Collection<Film> films = filmStorage.getAllFilms();
+        genreStorage.load(films);
+        return films;
     }
 
     public Film getFilmById(long id) throws NotFoundException {
-        return filmStorage.getFilmById(id);
+        Film film = filmStorage.getFilmById(id);
+        genreStorage.load(Collections.singletonList(film));
+        return film;
     }
 
     public Film addUserLike(long id, long userId) throws NotFoundException {
@@ -56,8 +61,7 @@ public class FilmService {
 
     public Collection<Film> getTopFilms(int count) {
         Collection<Film> films = likesStorage.getTopFilms(count);
+        genreStorage.load(films);
         return films;
     }
-
-
 }

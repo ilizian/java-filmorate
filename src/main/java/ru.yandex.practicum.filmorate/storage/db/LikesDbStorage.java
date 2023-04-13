@@ -20,6 +20,7 @@ import java.util.List;
 public class LikesDbStorage implements LikesStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
+
     @Override
     public void addUserLike(long id, long userId) {
         String sql = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
