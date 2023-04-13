@@ -58,8 +58,8 @@ public class FilmDbStorage implements FilmStorage {
         validateFilm(film);
         String sql = "UPDATE films SET film_name = ?, description = ?, release_date = ?, duration = ?,  mpa_id = ? " +
                 "WHERE film_id = ?";
-        int result = jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
-                , film.getMpa().getId(), film.getId());
+        int result = jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(),
+                film.getDuration(), film.getMpa().getId(), film.getId());
         if (result == 0) {
             throw new NotFoundException("Ошибка. Неправильный id фильма");
         }
