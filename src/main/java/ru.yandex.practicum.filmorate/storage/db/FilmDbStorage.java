@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.db.dal.MpaStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -21,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -29,11 +31,29 @@ import java.util.Collection;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final MpaStorage mpaStorage;
     private static final LocalDate DATE_MIN = LocalDate.of(1895, 12, 28);
     @Override
     public Film addFilm(Film film) throws ValidationException {
+        /*
         validateFilm(film);
-        String sql = "INSERT INTO films (name, description, release_date, duration, mpa_id)" +
+        String sql = "INSERT INTO films (film_name, description, release_date, duration, mpa_id, rate)" +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(conn -> {
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, new String[]{"film_id"});
+            preparedStatement.setString(1, film.getName());
+            preparedStatement.setString(2, film.getDescription());
+            preparedStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
+            preparedStatement.setInt(4, (int) film.getDuration());
+            preparedStatement.setInt(5, film.getMpa().getId());
+            preparedStatement.setInt(6, film.getRate());
+            return preparedStatement;
+        }, keyHolder);
+        film.setId(keyHolder.getKey().longValue());
+        return film; */
+        validateFilm(film);
+        String sql = "INSERT INTO films (film_name, description, release_date, duration, mpa_id)" +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
@@ -51,8 +71,18 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) throws ValidationException, NotFoundException {
+        /*
         validateFilm(film);
-        String sql = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?,  mpa_id = ? " +
+        String sql = "UPDATE films SET film_name = ?, description = ?, release_date = ?, duration = ?,  mpa_id = ? , rate = ? " +
+                "WHERE film_id = ?";
+        int result = jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+                , film.getMpa().getId(), film.getRate(), film.getId());
+        if (result == 0) {
+            throw new NotFoundException("Ошибка. Неправильный id фильма");
+        }
+        return film; */
+        validateFilm(film);
+        String sql = "UPDATE films SET film_name = ?, description = ?, release_date = ?, duration = ?,  mpa_id = ? " +
                 "WHERE film_id = ?";
         int result = jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
                 , film.getMpa().getId(), film.getId());
@@ -77,7 +107,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long id) throws NotFoundException {
-        String sql = "SELECT name, description, release_date, duration, mpa_id FROM films WHERE film_id = ?";
+        String sql = "SELECT * FROM films WHERE film_id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, this::makeFilm, id);
         } catch (DataAccessException e) {
@@ -86,13 +116,18 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film makeFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Film(
-                resultSet.getInt("film_id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getDate("release_date").toLocalDate(),
-                resultSet.getInt("duration"),
-                new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("name"))
-        );
+        try {
+            return new Film(
+                    resultSet.getInt("film_id"),
+                    resultSet.getString("film_name"),
+                    resultSet.getString("description"),
+                    resultSet.getDate("release_date").toLocalDate(),
+                    resultSet.getInt("duration"),
+                    mpaStorage.getMpaById(resultSet.getInt("mpa_id")),
+                    resultSet.getInt("rate")
+            );
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

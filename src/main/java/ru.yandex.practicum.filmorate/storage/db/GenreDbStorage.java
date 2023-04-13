@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.storage.db.dal.GenreStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -27,7 +28,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre getGenreById(int id) throws NotFoundException {
-        String sql = "SELECT genre_id, name FROM genres WHERE genre_id = ?";
+        String sql = "SELECT genre_id, genre_name FROM genres WHERE genre_id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, this::makeGenre, id);
         } catch (DataAccessException e) {
@@ -38,7 +39,7 @@ public class GenreDbStorage implements GenreStorage {
     private Genre makeGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return new Genre(
                 resultSet.getInt("genre_id"),
-                resultSet.getString("name")
+                resultSet.getString("genre_name")
         );
     }
 }

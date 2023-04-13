@@ -30,7 +30,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User addUser(User user) throws ValidationException {
         validateUser(user);
-        String sql = "INSERT INTO users (email, login, name, birthday) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, login, user_name, birthday) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
             PreparedStatement preparedStatement = conn.prepareStatement(sql, new String[]{"user_id"});
@@ -47,7 +47,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(User user) throws NotFoundException, ValidationException {
         validateUser(user);
-        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET email = ?, login = ?, user_name = ?, birthday = ? WHERE user_id = ?";
         int result = jdbcTemplate.update(sql, user.getEmail(), user.getLogin(),
                 user.getName(), user.getBirthday(), user.getId());
         if (result == 0) {
@@ -89,7 +89,7 @@ public class UserDbStorage implements UserStorage {
                 resultSet.getInt("user_id"),
                 resultSet.getString("email"),
                 resultSet.getString("login"),
-                resultSet.getString("name"),
+                resultSet.getString("user_name"),
                 resultSet.getDate("birthday").toLocalDate()
         );
     }

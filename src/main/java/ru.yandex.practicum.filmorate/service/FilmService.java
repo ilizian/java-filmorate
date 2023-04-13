@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.db.dal.LikesStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,6 +22,7 @@ public class FilmService {
     private final FilmStorage filmStorage;
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+    private final LikesStorage likesStorage;
 
     public Film addFilm(Film film) throws ValidationException {
         return filmStorage.addFilm(film);
@@ -39,26 +42,21 @@ public class FilmService {
 
     public Film addUserLike(long id, long userId) throws NotFoundException {
         Film film = filmStorage.getFilmById(id);
-        userStorage.getUserById(userId);
-        film.getLikes().add(userId);
+        User user = userStorage.getUserById(userId);
+        likesStorage.addUserLike(film.getId(), user.getId());
         return film;
     }
 
     public Film removeUserLike(long id, long userId) throws NotFoundException {
         Film film = filmStorage.getFilmById(id);
-        userStorage.getUserById(userId);
-        if (!film.getLikes().contains(userId)) {
-            throw new NotFoundException("Ошибка. Неправильный id фильма");
-        }
-        film.getLikes().remove(userId);
+        User user = userStorage.getUserById(userId);
+        likesStorage.removeLike(film.getId(), user.getId());
         return film;
     }
 
     public Collection<Film> getTopFilms(int count) {
-        return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparing(f -> f.getLikes().size(), (f1, f2) -> f2 - f1))
-                .limit(count)
-                .collect(Collectors.toList());
+        Collection<Film> films = likesStorage.getTopFilms(count);
+        return films;
     }
 
 

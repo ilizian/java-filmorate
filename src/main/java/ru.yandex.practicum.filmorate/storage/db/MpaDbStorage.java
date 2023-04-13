@@ -22,13 +22,14 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa getMpaById(int id) throws NotFoundException {
-        String sql = "SELECT * FROM mpas WHERE id = ?";
+        Mpa mpa;
+        String sql = "SELECT * FROM mpas WHERE mpa_id = ?";
         try {
-            Mpa mpa = jdbcTemplate.queryForObject(sql, this::makeMpa, id);
-            return mpa;
+            mpa = jdbcTemplate.queryForObject(sql, this::makeMpa, id);
         } catch (DataAccessException e) {
             throw new NotFoundException("MPA по ID " + id + " не найден!");
         }
+        return mpa;
     }
 
     @Override
@@ -38,6 +39,6 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     private Mpa makeMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("name"));
+        return new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name"));
     }
 }

@@ -55,7 +55,7 @@ public class FriendsDbStorage implements FriendsStorage {
                 resultSet.getInt("user_id"),
                 resultSet.getString("email"),
                 resultSet.getString("login"),
-                resultSet.getString("name"),
+                resultSet.getString("user_name"),
                 resultSet.getDate("birthday").toLocalDate()
         );
     }

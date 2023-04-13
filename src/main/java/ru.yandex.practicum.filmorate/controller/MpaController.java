@@ -19,17 +19,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class MpaController {
-    private final MpaService service;
+    private final MpaService mpaService;
 
     @GetMapping
     public List<Mpa> getAllMpa() {
         log.info("Запрос списка рейтинга MPA");
-        return service.getAllMpa();
+        return mpaService.getAllMpa();
     }
 
     @GetMapping("/{id}")
     public Mpa getMpaById(@PathVariable int id) throws NotFoundException {
         log.info("Запрос MPA по id " + id);
-        return service.getMpaById(id);
+        return mpaService.getMpaById(id);
     }
 }
