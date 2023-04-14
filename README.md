@@ -3,16 +3,16 @@
 
 ![ER](https://user-images.githubusercontent.com/114443883/232164584-20a260c9-a20a-4d75-bf4c-c61e1539289a.png)
 
-https://dbdiagram.io/d/643190098615191cfa8c5c63
 
+https://dbdiagram.io/d/643190098615191cfa8c5c63
 
 
 Таблицы:
 1. films (фильмы)
-2. genre (жанр)
+2. genres (жанры)
 3. film_genre (фильм-жанр)
-4. mpa (возрастной рейтинг)
-5. likes (одобрительные отметки)
+4. mpas (возрастной рейтинг)
+5. likes (пользовательские лайки)
 6. users (пользователи)
 7. friends (друзья)
 
