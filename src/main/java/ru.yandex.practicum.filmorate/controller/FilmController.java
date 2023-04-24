@@ -21,7 +21,6 @@ import java.util.Collection;
 public class FilmController {
     private final FilmService filmService;
 
-
     @GetMapping
     public Collection<Film> getAllFilms() {
         log.debug("Запрос списка всех фильмов");

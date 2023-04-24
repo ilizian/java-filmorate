@@ -1,7 +1,8 @@
 # Filmorate project.
 
 
-![ER diag](https://user-images.githubusercontent.com/114443883/231378577-ac881249-47a9-4076-b10a-3a61578423b5.png)
+![ER](https://user-images.githubusercontent.com/114443883/232164584-20a260c9-a20a-4d75-bf4c-c61e1539289a.png)
+
 
 https://dbdiagram.io/d/643190098615191cfa8c5c63
 

@@ -29,9 +29,8 @@ public class UserControllerTest {
 
     @Test
     void addUserWrongEmailEmpty() {
-        User user = new User();
-        user.setLogin("test");
-        user.setBirthday(LocalDate.of(1925, 12, 12));
+        User user = new User(1, null, "login", "name",
+                LocalDate.of(1925, 12, 12));
         Set<ConstraintViolation<User>> validates = validator.validate(user);
         assertEquals(1, validates.size());
         ConstraintViolation<User> validate = validates.iterator().next();
@@ -40,10 +39,8 @@ public class UserControllerTest {
 
     @Test
     void addUserWrongEmailWithoutDog() {
-        User user = new User();
-        user.setLogin("test");
-        user.setEmail("testtest.ru");
-        user.setBirthday(LocalDate.of(1925, 12, 12));
+        User user = new User(1, "email", "login", "name",
+                LocalDate.of(1925, 12, 12));
         Set<ConstraintViolation<User>> validates = validator.validate(user);
         assertEquals(1, validates.size());
         ConstraintViolation<User> validate = validates.iterator().next();
@@ -52,8 +49,8 @@ public class UserControllerTest {
 
     @Test
     void addUserWrongLoginEmpty() {
-        User user = new User();
-        user.setEmail("test@test.ru");
+        User user = new User(1, "email@mail.ru", null, "name",
+                LocalDate.of(1925, 12, 12));
         Set<ConstraintViolation<User>> validates = validator.validate(user);
         assertEquals(1, validates.size());
         ConstraintViolation<User> validate = validates.iterator().next();
@@ -62,9 +59,8 @@ public class UserControllerTest {
 
     @Test
     void addUserWrongLoginSpace() {
-        User user = new User();
-        user.setLogin("test test");
-        user.setEmail("test@test.ru");
+        User user = new User(1, "email@mail.ru", "login login", "name",
+                LocalDate.of(1925, 12, 12));
         final ValidationException e = assertThrows(
                 ValidationException.class,
                 () -> userStorage.addUser(user));
@@ -73,10 +69,8 @@ public class UserControllerTest {
 
     @Test
     void addUserWrongBirthdayDate() {
-        User user = new User();
-        user.setLogin("test");
-        user.setEmail("test@test.ru");
-        user.setBirthday(LocalDate.of(2050, 12, 12));
+        User user = new User(1, "email@mail.ru", "login", "name",
+                LocalDate.of(2050, 12, 12));
         Set<ConstraintViolation<User>> validates = validator.validate(user);
         assertEquals(1, validates.size());
         ConstraintViolation<User> validate = validates.iterator().next();
@@ -85,10 +79,8 @@ public class UserControllerTest {
 
     @Test
     void addUserNameItsLogin() throws ValidationException {
-        User user = new User();
-        user.setLogin("test");
-        user.setEmail("test@test.ru");
-        user.setBirthday(LocalDate.of(1925, 12, 12));
+        User user = new User(1, "email@mail.ru", "login", "",
+                LocalDate.of(2050, 12, 12));
         userStorage.addUser(user);
         assertEquals(user.getLogin(), user.getName());
     }
